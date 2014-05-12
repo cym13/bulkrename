@@ -1,0 +1,42 @@
+#!/bin/bash
+# Copyright Cédric Picard 2014 -- License DWTFYW -- inspired by Ranger's
+
+set -e
+
+if [ $# -ne 0 ] ; then
+    for i in "$@" ; do printf "%s\n" "$i" ; done | "$0"
+    exit
+fi
+
+[ -x "$(which "$EDITOR" 2>/dev/null)" ] || EDITOR=vi
+
+file=/tmp/blkrn-$$
+cat > ${file}.1
+exec </dev/tty >/dev/tty
+
+cp ${file}.1 ${file}.2
+"$EDITOR" ${file}.2
+
+line_count=$(wc -l < ${file}.1)
+if [ $line_count -ne $(wc -l < ${file}.2) ] ; then
+    rm ${file}.1 ${file}.2
+    echo "Wrong number of lines" >&2
+    exit 1
+fi
+
+paste -d "\n" ${file}.1 ${file}.2 | while [ $line_count -ne 0 ] ; do
+    line_count=$(($line_count - 1))
+    read -r input  ;  input="$(printf "%s" "$input"  | sed "s/'/'\"'\"'/")"
+    read -r output ; output="$(printf "%s" "$output" | sed "s/'/'\"'\"'/")"
+
+    if [ "$input" != "$output" ] ; then
+        echo "mv -v -- '$input' '$output'"
+    fi
+done > ${file}.sh
+
+if [ "$(stat --printf="%s" ${file}.sh)" -ne 0 ] ; then
+    "$EDITOR" ${file}.sh
+    sh ${file}.sh
+fi
+
+rm ${file}.1 ${file}.2 ${file}.sh
