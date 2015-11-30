@@ -1,14 +1,14 @@
 #!/bin/bash
-# Copyright Cédric Picard 2014 -- License DWTFYW -- inspired by Ranger's
+# Copyright Cédric Picard 2014 -- License WTFPL -- inspired by Ranger's
 
-set -e
+set -e -u
 
 if [ $# -ne 0 ] ; then
-    for i in "$@" ; do printf "%s\n" "$i" ; done | "$0"
+    { for i in "$@" ; do printf "$i\n" ; done } | "$0"
     exit
 fi
 
-[ -x "$(which "$EDITOR" 2>/dev/null)" ] || EDITOR=vi
+[ -x "$(which "$EDITOR" 2>/dev/null)" ] || EDITOR='vi'
 
 file=/tmp/blkrn-$$
 cat > ${file}.1
@@ -17,20 +17,19 @@ exec </dev/tty >/dev/tty
 cp ${file}.1 ${file}.2
 "$EDITOR" ${file}.2
 
-line_count=$(wc -l < ${file}.1)
-if [ $line_count -ne $(wc -l < ${file}.2) ] ; then
+if [ $(wc -l < ${file}.1) -ne $(wc -l < ${file}.2) ] ; then
     rm ${file}.1 ${file}.2
     echo "Wrong number of lines" >&2
     exit 1
 fi
 
-paste -d "\n" ${file}.1 ${file}.2 | while [ $line_count -ne 0 ] ; do
-    line_count=$(($line_count - 1))
-    read -r input  ;  input="$(printf "%s" "$input"  | sed "s/'/'\"'\"'/")"
-    read -r output ; output="$(printf "%s" "$output" | sed "s/'/'\"'\"'/")"
+sed -i "s/'/'\"'\"'/g" ${file}.1 ${file}.2
+
+paste -d "\n" ${file}.1 ${file}.2  | while read -r input ; do
+    read -r output
 
     if [ "$input" != "$output" ] ; then
-        echo "mv -v -- '$input' '$output'"
+        echo "mv -- '$input' '$output'"
     fi
 done > ${file}.sh
 
