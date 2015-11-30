@@ -27,7 +27,8 @@ wanted to stay at 42 lines of code and the GPLv3 was too long.
 Contact
 =======
 
-Main developper: Cédric Picard
-Email:           cedric.picard@efrei.net
-Twitter:         @Cym13
-GPG:             383A 76B9 D68D 2BD6 9D2B  4716 E3B9 F4FE 5CED 42CB
+::
+
+    Main developper: Cédric Picard
+    Email:           cedric.picard@efrei.net
+    GPG:             383A 76B9 D68D 2BD6 9D2B  4716 E3B9 F4FE 5CED 42CB
