@@ -9,11 +9,11 @@ if [ $# -ne 0 ] ; then
     exit
 fi
 
-[ -x "$(which "$EDITOR" 2>/dev/null)" ] || EDITOR='vi'
+EDITOR="${EDITOR:-vi}"
 
 file=/tmp/blkrn-$$
 cat > ${file}.1
-exec </dev/tty >/dev/tty
+exec </dev/tty >/dev/tty || { echo 'Interactive terminal needed' >&2; exit; }
 
 cp ${file}.1 ${file}.2
 "$EDITOR" ${file}.2
