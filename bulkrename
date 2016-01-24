@@ -11,32 +11,32 @@ fi
 
 EDITOR="${EDITOR:-vi}"
 
-file=/tmp/blkrn-$$
-cat > ${file}.1
+namebase="$(mktemp -d)/blkrn"
+cat > "${namebase}.1"
 exec </dev/tty >/dev/tty || { echo 'Interactive terminal needed' >&2; exit; }
 
-cp ${file}.1 ${file}.2
-"$EDITOR" ${file}.2
+cp "${namebase}.1" "${namebase}.2"
+"$EDITOR" "${namebase}.2"
 
-if [ $(wc -l < ${file}.1) -ne $(wc -l < ${file}.2) ] ; then
-    rm ${file}.1 ${file}.2
+if [ $(wc -l < "${namebase}.1") -ne $(wc -l < "${namebase}.2") ] ; then
+    rm -r "$(dirname "${namebase}")"
     echo "Wrong number of lines" >&2
     exit 1
 fi
 
-sed -i "s/'/'\"'\"'/g" ${file}.1 ${file}.2
+sed -i "s/'/'\"'\"'/g" "${namebase}.1" "${namebase}.2"
 
-paste -d "\n" ${file}.1 ${file}.2  | while read -r input ; do
+paste -d "\n" "${namebase}.1" "${namebase}.2"  | while read -r input ; do
     read -r output
 
     if [ "$input" != "$output" ] ; then
         echo "mv -- '$input' '$output'"
     fi
-done > ${file}.sh
+done > "${namebase}.sh"
 
-if [ "$(stat --printf="%s" ${file}.sh)" -ne 0 ] ; then
-    "$EDITOR" ${file}.sh
-    sh ${file}.sh
+if [ "$(stat --printf="%s" "${namebase}.sh")" -ne 0 ] ; then
+    "$EDITOR" "${namebase}.sh"
+    sh "${namebase}.sh"
 fi
 
-rm ${file}.1 ${file}.2 ${file}.sh
+rm -r "$(dirname "${namebase}")"
