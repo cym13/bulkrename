@@ -5,7 +5,7 @@
 set -e -u
 
 if [ $# -ne 0 ] ; then
-    { for i in "$@" ; do printf "$i\n" ; done } | "$0"
+    { for i in "$@" ; do printf "%s\n" "$i" ; done } | "$0"
     exit
 fi
 
