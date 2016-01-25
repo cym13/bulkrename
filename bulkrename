@@ -11,10 +11,13 @@ fi
 EDITOR="${EDITOR:-vi}"
 
 namebase="$(mktemp -d)/blkrn"
+echo '# Modify filenames without removing any line, quitting aborts' \
+    > "${namebase}.2"
 tee -- "${namebase}.1" >> "${namebase}.2"
 exec </dev/tty >/dev/tty || { echo 'Interactive terminal needed' >&2 ; exit 1; }
 
 "$EDITOR" "${namebase}.2"
+sed -i -- '1d' "${namebase}.2"
 
 if [ $(wc -l < "${namebase}.1") -ne $(wc -l < "${namebase}.2") ] ; then
     rm -r "$(dirname "${namebase}")"
