@@ -37,7 +37,6 @@ sed -i -- 's/\([\\"$`]\)/\\\1/g;' "${namebase}.1" "${namebase}.2"
 if [ "$(wc -c < "${namebase}.sh")" -ne 0 ] ; then
     "$EDITOR" -- "${namebase}.sh"
     sh -e -- "${namebase}.sh"
-    echo "bulkrename is done"
 fi
 
 rm -r -- "$(dirname "${namebase}")"
