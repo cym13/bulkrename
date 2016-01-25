@@ -20,9 +20,8 @@ exec </dev/tty >/dev/tty || { echo 'Interactive terminal needed' >&2 ; exit 1; }
 sed -i -- '1d' "${namebase}.2"
 
 if [ $(wc -l < "${namebase}.1") -ne $(wc -l < "${namebase}.2") ] ; then
-    rm -r "$(dirname "${namebase}")"
-    echo "Wrong number of lines" >&2
-    exit 1
+    rm -r -- "$(dirname -- "${namebase}")"
+    echo "Wrong number of lines" >&2 ; exit 1
 fi
 
 sed -i -- 's/\([\\"$`]\)/\\\1/g;' "${namebase}.1" "${namebase}.2"
@@ -35,10 +34,9 @@ sed -i -- 's/\([\\"$`]\)/\\\1/g;' "${namebase}.1" "${namebase}.2"
     > "${namebase}.sh"
 
 if [ "$(wc -c < "${namebase}.sh")" -ne 0 ] ; then
-
-    "$EDITOR" "${namebase}.sh"
+    "$EDITOR" -- "${namebase}.sh"
     sh -e -- "${namebase}.sh"
     echo "bulkrename is done"
 fi
 
-rm -r "$(dirname "${namebase}")"
+rm -r -- "$(dirname "${namebase}")"
