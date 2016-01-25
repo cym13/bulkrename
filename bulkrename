@@ -11,10 +11,9 @@ fi
 EDITOR="${EDITOR:-vi}"
 
 namebase="$(mktemp -d)/blkrn"
-cat > "${namebase}.1"
 exec </dev/tty >/dev/tty || { echo 'Interactive terminal needed' >&2; exit; }
+tee -- "${namebase}.1" >> "${namebase}.2"
 
-cp "${namebase}.1" "${namebase}.2"
 "$EDITOR" "${namebase}.2"
 
 if [ $(wc -l < "${namebase}.1") -ne $(wc -l < "${namebase}.2") ] ; then
