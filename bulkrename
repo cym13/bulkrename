@@ -5,8 +5,7 @@
 set -e -u
 
 if [ $# -ne 0 ] ; then
-    { for i in "$@" ; do printf "%s\n" "$i" ; done } | "$0"
-    exit
+    { for i in "$@" ; do printf "%s\n" "$i" ; done } | exec "$0"
 fi
 
 EDITOR="${EDITOR:-vi}"
