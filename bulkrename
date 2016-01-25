@@ -34,8 +34,8 @@ sed -i -- 's/\([\\"$`]\)/\\\1/g;' "${namebase}.1" "${namebase}.2"
     | xargs -d"\n" -L2 echo 'mv -i --') \
     > "${namebase}.sh"
 
+if [ "$(wc -c < "${namebase}.sh")" -ne 0 ] ; then
 
-if [ "$(stat --printf="%s" "${namebase}.sh")" -ne 0 ] ; then
     "$EDITOR" "${namebase}.sh"
     sh -e -- "${namebase}.sh"
     echo "bulkrename is done"
