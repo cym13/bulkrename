@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Copyright Cédric Picard 2014 -- License WTFPL
 # Inspired by Ranger's -- See https://github.com/hut/ranger
 
@@ -36,7 +36,7 @@ done > "${namebase}.sh"
 
 if [ "$(stat --printf="%s" "${namebase}.sh")" -ne 0 ] ; then
     "$EDITOR" "${namebase}.sh"
-    bash "${namebase}.sh"
+    sh -e -- "${namebase}.sh"
 fi
 
 rm -r "$(dirname "${namebase}")"
