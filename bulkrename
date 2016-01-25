@@ -25,7 +25,7 @@ if [ $(wc -l < "${namebase}.1") -ne $(wc -l < "${namebase}.2") ] ; then
     exit 1
 fi
 
-sed -i "s/'/'\"'\"'/g" "${namebase}.1" "${namebase}.2"
+sed -i -- 's/\([\\"$`]\)/\\\1/g;' "${namebase}.1" "${namebase}.2"
 
 paste -d "\n" "${namebase}.1" "${namebase}.2"  | while read -r input ; do
     read -r output
