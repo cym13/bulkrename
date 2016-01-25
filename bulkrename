@@ -11,8 +11,8 @@ fi
 EDITOR="${EDITOR:-vi}"
 
 namebase="$(mktemp -d)/blkrn"
-exec </dev/tty >/dev/tty || { echo 'Interactive terminal needed' >&2; exit; }
 tee -- "${namebase}.1" >> "${namebase}.2"
+exec </dev/tty >/dev/tty || { echo 'Interactive terminal needed' >&2 ; exit 1; }
 
 "$EDITOR" "${namebase}.2"
 
@@ -35,6 +35,7 @@ done > "${namebase}.sh"
 if [ "$(stat --printf="%s" "${namebase}.sh")" -ne 0 ] ; then
     "$EDITOR" "${namebase}.sh"
     sh -e -- "${namebase}.sh"
+    echo "bulkrename is done"
 fi
 
 rm -r "$(dirname "${namebase}")"
