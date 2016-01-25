@@ -27,13 +27,13 @@ fi
 
 sed -i -- 's/\([\\"$`]\)/\\\1/g;' "${namebase}.1" "${namebase}.2"
 
-paste -d "\n" "${namebase}.1" "${namebase}.2"  | while read -r input ; do
-    read -r output
+(echo '# Please review/modify this script or empty it to do nothing' \
+    ; paste -d "\n" -- "${namebase}.1" "${namebase}.2" \
+    | uniq -c \
+    | sed -n 's/^ *1 \(.*\)$/"\1"/p' \
+    | xargs -d"\n" -L2 echo 'mv -i --') \
+    > "${namebase}.sh"
 
-    if [ "$input" != "$output" ] ; then
-        echo "mv -- '$input' '$output'"
-    fi
-done > "${namebase}.sh"
 
 if [ "$(stat --printf="%s" "${namebase}.sh")" -ne 0 ] ; then
     "$EDITOR" "${namebase}.sh"
