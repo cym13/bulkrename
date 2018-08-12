@@ -28,9 +28,9 @@ fi
 sed -i -- 's/\([\\"$`]\)/\\\1/g;' "${namebase}.1" "${namebase}.2"
 
 (echo '# Please review/modify this script or empty it to do nothing' \
-    ; paste -d "\n" -- "${namebase}.1" "${namebase}.2" \
-    | uniq -c \
-    | sed -n 's/^ *1 \(.*\)$/"\1"/p' \
+    ; comm -3 --output-delimiter="" "${namebase}.1" "${namebase}.2" \
+    | tr -d '\0' \
+    | sed 's/^.*$/"&"/' \
     | xargs -d"\n" -L2 echo 'mv -i --') \
     > "${namebase}.sh"
 
